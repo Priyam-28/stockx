@@ -10,6 +10,7 @@ DISCORD_CHANNEL_IDS = [1346527622720520225]  # Replace with your channel IDs
 if not DISCORD_BOT_TOKEN:
     raise ValueError("Discord bot token not found in .env file")
 # Market Configuration
+# config.py
 ASSET_CONFIG = {
     'meme_coins': {
         'DOGE2': {'base_price': 0.10, 'volatility': 0.2},
@@ -17,8 +18,8 @@ ASSET_CONFIG = {
     },
     'stable_coins': ['USDS', 'EURO-S'],
     'traditional_assets': {
-        'BTC-SIM': {'ticker': 'BTC-USD'},
-        'TECH-ETF': {'ticker': 'SPY'}
+        'BTC-SIM': {'ticker': 'BTC-USD'},  # Valid ticker for Bitcoin
+        'TECH-ETF': {'ticker': 'SPY'}      # Valid ticker for S&P 500 ETF
     }
 }
 

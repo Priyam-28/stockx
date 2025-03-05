@@ -1,10 +1,13 @@
-import random
 import threading
 import time
 from typing import Dict
 from config import ASSET_CONFIG, ACTIVITY_IMPACT_FACTOR, PRICE_UPDATE_INTERVAL
 from market.assets import Asset
 from data.yfinance_client import YFinanceClient
+import random
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 class GlobalMarket:
     def __init__(self):
@@ -46,6 +49,7 @@ class GlobalMarket:
             self._update_meme_coins()
             self._update_stablecoins()
             self._update_traditional_assets()
+            logging.info("Updated prices for all assets")
             time.sleep(PRICE_UPDATE_INTERVAL)
 
     def _update_meme_coins(self):
@@ -53,17 +57,20 @@ class GlobalMarket:
             if asset.asset_type == 'meme':
                 asset.price *= (1 + asset.sentiment + random.uniform(-0.05, 0.05))
                 asset.price = max(0.01, asset.price)
+                logging.info(f"Updated price for {asset.symbol}: {asset.price}")
 
     def _update_stablecoins(self):
         for asset in self.assets.values():
             if asset.asset_type == 'stable':
                 impact = self._calculate_activity_impact(asset.symbol)
                 asset.price = max(0.95, min(1.05, asset.price + impact))
+                logging.info(f"Updated price for {asset.symbol}: {asset.price}")
 
     def _update_traditional_assets(self):
         for asset in self.assets.values():
             if asset.asset_type == 'traditional':
                 asset.price = self.client.get_latest_price(asset.ticker)
+                logging.info(f"Updated price for {asset.symbol}: {asset.price}")
 
     def _calculate_activity_impact(self, symbol):
         with self.lock:
@@ -76,3 +83,4 @@ class GlobalMarket:
             if symbol not in self.player_activity[action]:
                 self.player_activity[action][symbol] = []
             self.player_activity[action][symbol].append(amount)
+            logging.info(f"Recorded {action} of {amount} for {symbol}")
